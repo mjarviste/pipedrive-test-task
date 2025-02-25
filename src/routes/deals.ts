@@ -8,7 +8,17 @@ const forwardRequest = async (
   res: Response,
   method: "get" | "post" | "put"
 ) => {
-  const url = `${process.env.BASE_URL}?api_token=${process.env.PIPEDRIVE_API_TOKEN}`;
+  let url = process.env.BASE_URL || "";
+
+  if (method === "put") {
+    const id = req.params.id || req.body.id;
+    if (id) {
+      url += `/${id}`;
+    }
+  }
+
+  url += `?api_token=${process.env.PIPEDRIVE_API_TOKEN}`;
+
   try {
     const options = {
       method,
@@ -18,8 +28,14 @@ const forwardRequest = async (
     };
     const response = await axios(options);
     res.status(response.status).json(response.data);
-  } catch (error: any) {
-    res.status(error.response?.status || 500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      res.status(error.response?.status || 500).json({ error: error.message });
+    } else if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unexpected error occurred" });
+    }
   }
 };
 
