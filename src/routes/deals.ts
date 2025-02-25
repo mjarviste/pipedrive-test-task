@@ -18,8 +18,14 @@ const forwardRequest = async (
     };
     const response = await axios(options);
     res.status(response.status).json(response.data);
-  } catch (error: any) {
-    res.status(error.response?.status || 500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      res.status(error.response?.status || 500).json({ error: error.message });
+    } else if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unexpected error occurred" });
+    }
   }
 };
 
