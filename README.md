@@ -6,6 +6,8 @@ This is a simple Node.js/TypeScript application for a Pipedrive home challenge. 
 
 ## Project Structure
 
+```plaintext
+
 pipedrive-devops-ts/
 ├── src/
 │ ├── routes/
@@ -23,6 +25,8 @@ pipedrive-devops-ts/
 ├── tsconfig.json
 ├── .env # Environment variables file
 └── README.md # This file
+
+```
 
 ---
 
